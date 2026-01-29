@@ -12,23 +12,27 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL || 'https://ordermanagementclient.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'https://ordermanagementclient.vercel.app',
   credentials: true
 }));
 app.use(express.json());
 
-// Simple middleware to attach io
-const attachIo = (req, res, next) => {
+// Make io available to all routes
+app.use((req, res, next) => {
   req.io = io;
   next();
-};
+});
+
+// Routes
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -38,10 +42,6 @@ app.get('/health', (req, res) => {
     database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
   });
 });
-
-// Routes
-app.use('/api/menu', menuRoutes);
-app.use('/api/orders', attachIo, orderRoutes);
 
 // Socket.IO connection
 io.on('connection', (socket) => {
