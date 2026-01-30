@@ -14,6 +14,7 @@ The project demonstrates clean architecture, real-time updates, test-driven deve
 
 📽️ Loom Walkthrough (12–15 mins):
 👉 Link to Loom video here
+https://www.loom.com/share/432e20a967db4063b8925cec374bdf2b
    
 ⸻
 
